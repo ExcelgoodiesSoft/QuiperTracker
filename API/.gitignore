@@ -1,0 +1,7 @@
+/.vs
+/QuiperTracker/bin
+/QuiperTracker/obj
+/QuiperTracker/packages
+/QuiperTracker/.config
+/QuiperTracker/appsettings.json
+/QuiperTracker/appsettings.Development.json
