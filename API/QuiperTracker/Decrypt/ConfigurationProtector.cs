@@ -5,8 +5,40 @@ namespace QuiperTracker.Decrypt
 {
     public static class ConfigurationProtector
     {
-        private const string ENCRYPTION_KEY_SOURCE = "38B2144BCD2E5F5B7FB2AD2BCB5C7";
-        private static readonly byte[] SALT = new byte[] { 0x53, 0x49, 0x53, 0x4c, 0x20, 0x44, 0x49, 0x41, 0x4d, 0x4c, 0x45, 0x52 };
+        public const string ENCRYPTION_KEY_SOURCE = "38B2144BCD2E5F5B7FB2AD2BCB5C7";
+        public static readonly byte[] SALT = new byte[] { 0x53, 0x49, 0x53, 0x4c, 0x20, 0x44, 0x49, 0x41, 0x4d, 0x4c, 0x45, 0x52 };
+
+        public static string Encrypt(string clearText)
+        {
+            if (string.IsNullOrWhiteSpace(clearText)) return clearText;
+
+            try
+            {
+                string encryptionKey = ENCRYPTION_KEY_SOURCE;
+                byte[] clearBytes = Encoding.Unicode.GetBytes(clearText);
+
+                using (Aes encryptor = Aes.Create())
+                {
+                    Rfc2898DeriveBytes pdb = new Rfc2898DeriveBytes(encryptionKey, SALT);
+                    encryptor.Key = pdb.GetBytes(32);
+                    encryptor.IV = pdb.GetBytes(16);
+
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        using (CryptoStream cs = new CryptoStream(ms, encryptor.CreateEncryptor(), CryptoStreamMode.Write))
+                        {
+                            cs.Write(clearBytes, 0, clearBytes.Length);
+                            cs.Close();
+                        }
+                        return Convert.ToBase64String(ms.ToArray());
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                return $"ENCRYPTION ERROR: {ex.Message}";
+            }
+        }
 
         public static string Decrypt(string cipherText)
         {
