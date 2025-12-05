@@ -29,7 +29,6 @@ const UserConfiguration = () => {
                     .filter((r) => r.status?.toLowerCase() === "active")
                     .map((r) => r.role1?.toLowerCase());
                 setRoles(activeRoles);
-                // setRoles(res.data.map((r) => r.role1?.toLowerCase()));
             }
         } catch (err) {
             console.error("Error fetching roles:", err);
@@ -94,26 +93,7 @@ const UserConfiguration = () => {
                 totalPages={totalPages}
                 onPageChange={setPage}
             />
-
-            {/* <div className="d-flex justify-content-around align-items-center mt-5">
-                <button
-                    className="btn btn-outline-dark me-2"
-                    disabled={page <= 1}
-                    onClick={() => setPage((p) => p - 1)}
-                >
-                    Previous
-                </button>
-                <span>
-                    Page {page} of {totalPages}
-                </span>
-                <button
-                    className="btn btn-outline-dark ms-2"
-                    disabled={page >= totalPages}
-                    onClick={() => setPage((p) => p + 1)}
-                >
-                    Next
-                </button>
-            </div> */}
+            
         </div>
     );
 };

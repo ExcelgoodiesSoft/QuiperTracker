@@ -23,8 +23,6 @@ const PaginationControls = ({ page, totalPages, onPageChange }) => {
         }
     }
 
-    console.log(`${startPage} to  ${endPage}`)
-
     return (
         <div className="pagination-footer d-flex justify-content-center align-items-center gap-3">
             <span>

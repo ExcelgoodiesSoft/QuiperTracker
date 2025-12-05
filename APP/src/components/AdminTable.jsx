@@ -43,15 +43,6 @@ const AdminTable = (
         { header: "Man Minutes", accessor: "manMinutes", width: "110px" },
     ];
 
-    // const dropdownOptions = {
-    //     username: ["Alice", "Bob", "Naaga", "Sudharsan"],
-    //     client: ["Infosys", "TCS", "Wipro"],
-    //     project: ["Payroll System", "CRM Portal"],
-    //     call: ["Yes", "No"],
-    //     manHours: ["0", "1", "2"],
-    //     manMinutes: ["0", "15", "30", "45"],
-    // };
-
     return (
         <>
             <FilterBar
@@ -77,7 +68,6 @@ const AdminTable = (
 
                 onClientChange={(client) => {
                     setSelectedClient(client);
-                    // loadReports(client);
                     onPageChange(1);
                 }}
 
@@ -87,14 +77,12 @@ const AdminTable = (
                     setEndDate(today);
                     setSelectedUser("");
                     setSelectedClient("");
-                    setSortDirection("asc")
-                    // loadReports();
+                    setSortDirection("asc");
                     onPageChange(1);
                 }}
             />
             <div className="container-fluid px-4 table-wrapper">
-                {/* <h4 className="text-center">Admin Report</h4> */}
-                {/* <h5 className='m-0'>Admin Reports</h5> */}
+                
                 <EditableTable
                     columns={columns}
                     data={data}
@@ -121,34 +109,7 @@ const AdminTable = (
                     totalPages={totalPages}
                     onPageChange={onPageChange}
                 />
-                {/* <div className="pagination-footer d-flex justify-content-center align-items-center gap-5">
-                    <span>
-                        Page {page} of {totalPages}
-                    </span>
-                    <button
-                        className="btn btn-outline-dark me-2"
-                        disabled={page <= 1}
-                        onClick={() => onPageChange(page - 1)}
-                    >
-                        Previous
-                    </button>
-                    {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
-                        <button
-                        key={pageNumber}
-                         className={`btn btn-outline-dark ${pageNumber === page ? 'active' : ''}`}
-                        onClick={()=>onPageChange(pageNumber)}
-                        >
-                            {pageNumber}
-                        </button>
-                    ))}
-                    <button
-                        className="btn btn-outline-dark ms-2"
-                        disabled={page >= totalPages}
-                        onClick={() => onPageChange(page + 1)}
-                    >
-                        Next
-                    </button>
-                </div> */}
+                
             </div>
         </>
     );

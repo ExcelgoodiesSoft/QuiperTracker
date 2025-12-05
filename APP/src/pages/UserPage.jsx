@@ -81,8 +81,10 @@ const UserPage = () => {
             } while (currentPage <= totalPages);
 
             if (!allData.length) {
-                alert("No reports to export");
-                return;
+                return {
+                    success: false,
+                    message: "No reports to export"
+                };
             }
 
             const workbook = new ExcelJS.Workbook();
@@ -151,6 +153,12 @@ const UserPage = () => {
             const buffer = await workbook.xlsx.writeBuffer();
             const blob = new Blob([buffer], { type: "application/octet-stream" });
             fs.saveAs(blob, `${sheetName}.xlsx`);
+
+            const exportText = "All reports exported successfully!";
+            return {
+                success: true,
+                message: exportText
+            };
         } catch (err) {
             console.error("Error exporting all reports:", err);
             alert("Failed to export reports. Check console for details.");

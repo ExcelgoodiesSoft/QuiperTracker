@@ -3,7 +3,6 @@ import { getToken } from "./authService";
 
 axios.interceptors.request.use(
     (config) => {
-        // console.log("Axios Request Config:", config);
         const token = getToken();
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
@@ -62,8 +61,6 @@ export const fetchReports = async (pagenumber = 1, pageSize = 10, startDate,
         if (sortColumn) params.sortColumn = sortColumn;
         if (sortDirection) params.sortDirection = sortDirection;
 
-        // const token = getToken();
-
         const response = await axios.get(`${API_BASE_URL}/Admin/fetch-reports`, {
             params
         });
@@ -84,7 +81,6 @@ export const fetchUserReports = async (username, pagenumber = 1, pageSize = 10,
         if (endDate) params.endDate = endDate;
         if (sortColumn) params.sortColumn = sortColumn;
         if (sortDirection) params.sortDirection = sortDirection;
-        // const token = getToken();
 
         const response = await axios.get(`${API_BASE_URL}/User/userreports`, {
             params
@@ -99,10 +95,6 @@ export const fetchUserReports = async (username, pagenumber = 1, pageSize = 10,
 
 export const addReport = async (reportData) => {
     try {
-        // const token = getToken();
-        // headers: {
-        //         Authorization: token ? `Bearer ${token}` : ""
-        //     }
         const response = await axios.post(`${API_BASE_URL}/Home/add-report`, reportData);
         return response.data;
     } catch (error) {

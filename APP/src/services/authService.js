@@ -35,17 +35,6 @@ export const login = async (email) => {
                 "Unable to connect to server. Please try again.",
         };
     }
-
-    // const user = users.find(
-    //     (u) => u.email.toLowerCase() === email.toLowerCase()
-    // );
-
-    // if (user) {
-    //     localStorage.setItem("loggedInUser", JSON.stringify(user));
-    //     return user;
-    // }
-
-    // return null; // invalid email
 };
 
 // Get the logged-in user from localStorage

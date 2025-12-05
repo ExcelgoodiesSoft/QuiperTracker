@@ -1,6 +1,5 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-// import { useOutletContext } from "react-router-dom";
 import AdminTable from "../components/AdminTable";
 import LoginPage from "../pages/LoginPage";
 import AdminPage from "../pages/AdminPage";

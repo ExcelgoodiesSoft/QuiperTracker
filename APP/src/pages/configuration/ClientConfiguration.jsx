@@ -60,26 +60,7 @@ const ClientConfiguration = () => {
                 totalPages={totalPages}
                 onPageChange={setPage}
             />
-
-            {/* <div className="d-flex justify-content-around align-items-center mt-5 w-100">
-                <button
-                    className="btn btn-outline-dark me-2"
-                    disabled={page <= 1}
-                    onClick={() => setPage(page - 1)}
-                >
-                    Previous
-                </button>
-                <span>
-                    Page {page} of {totalPages}
-                </span>
-                <button
-                    className="btn btn-outline-dark ms-2"
-                    disabled={page >= totalPages}
-                    onClick={() => setPage(page + 1)}
-                >
-                    Next
-                </button>
-            </div> */}
+            
         </div>
     );
 

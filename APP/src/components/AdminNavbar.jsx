@@ -41,26 +41,6 @@ const AdminNavbar = () => {
                         {/* Navbar Links */}
                         <div className="collapse navbar-collapse" id="navbarNav">
                             <ul className="navbar-nav me-auto align-items-center" style={{ gap: "1rem" }}>
-                                {/* <li className="nav-item dropdown">
-                                    <a
-                                        className="nav-link dropdown-toggle text-black"
-                                        href="."
-                                        id="configDropdown"
-                                        role="button"
-                                        data-bs-toggle="dropdown"
-                                        aria-expanded="false"
-                                    >
-                                        Config
-                                    </a>
-
-                                    <ul className="dropdown-menu dropdown-menu-white" aria-labelledby="configDropdown">
-                                        <li><a className="dropdown-item" href="/admin/config/clients">Client Config</a></li>
-                                        <li><a className="dropdown-item" href="/admin/config/projects">Project Config</a></li>
-                                        <li><a className="dropdown-item" href="/admin/config/roles">Role Config</a></li>
-                                        <li><a className="dropdown-item" href="/admin/config/users">User Config</a></li>
-                                    </ul>
-                                </li> */}
-
                                 <li className="nav-item">
                                     <Dropdown>
                                         <Dropdown.Toggle
@@ -113,7 +93,6 @@ const AdminNavbar = () => {
                 </div>
             </div>
         </nav>
-        // </div>
     );
 };
 

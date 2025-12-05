@@ -94,8 +94,10 @@ const AddTimesheet = () => {
             } while (currentPage <= totalPages);
 
             if (!allData.length) {
-                alert("No reports to export");
-                return;
+                return {
+                    success: false,
+                    message: "No reports to export"
+                };
             }
 
             // Create workbook
@@ -157,6 +159,12 @@ const AddTimesheet = () => {
             const blob = new Blob([buffer], { type: "application/octet-stream" });
             fs.saveAs(blob, `${sheetName}.xlsx`);
 
+            const exportText = "All reports exported successfully!";
+            return {
+                success: true,
+                message: exportText
+            };
+
         } catch (err) {
             console.error("Error exporting user reports:", err);
             alert("Failed to export user reports. Check console.");
@@ -198,37 +206,18 @@ const AddTimesheet = () => {
                 showClient={false}
                 startDate={startDate}
                 endDate={endDate}
-                // selectedUser={selectedUser}
-                // selectedClient={selectedClient}
 
                 onChange={({ startDate: s, endDate: e }) => {
                     setStartDate(s);
                     setEndDate(e);
                     setPage(1);
-                    // loadReports(s, e);
                 }}
-
-                // onUserChange={(user) => {
-                //     setSelectedUser(user);
-                //     // loadReports(user);
-                //     onPageChange(1);
-                // }}
-
-                // onClientChange={(client) => {
-                //     setSelectedClient(client);
-                //     // loadReports(client);
-                //     onPageChange(1);
-                // }
-                // }
 
                 onReset={() => {
                     const today = new Date().toISOString().split("T")[0];
                     setStartDate(today);
                     setEndDate(today);
                     setSortDirection("asc");
-                    // setSelectedUser(loggedInUser.name);
-                    // setSelectedClient("");
-                    // loadReports();
                     setPage(1);
                 }}
             />
@@ -263,26 +252,6 @@ const AddTimesheet = () => {
                     totalPages={totalPages}
                     onPageChange={setPage}
                 />
-
-                {/* <div className="d-flex justify-content-around align-items-center mt-4">
-                    <button
-                        className="btn btn-outline-dark me-2"
-                        disabled={page <= 1}
-                        onClick={() => setPage(page - 1)}
-                    >
-                        Previous
-                    </button>
-                    <span>
-                        Page {page} of {totalPages}
-                    </span>
-                    <button
-                        className="btn btn-outline-dark ms-2"
-                        disabled={page >= totalPages}
-                        onClick={() => setPage(page + 1)}
-                    >
-                        Next
-                    </button>
-                </div> */}
             </div>
         </>
     );

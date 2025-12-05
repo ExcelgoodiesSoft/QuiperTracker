@@ -27,10 +27,6 @@ const AdminPage = () => {
     const [sortDirection, setSortDirection] = useState("asc");
     const capitalizeFirstLetter = (str) => str.charAt(0).toUpperCase() + str.slice(1);
 
-    // loggedInUser?.role === "admin"
-    //         ? reports
-    //         : reports.filter((r) => r.username.toLowerCase() === loggedInUser?.name?.toLowerCase())
-
     const loadReports = async () => {
         try {
             const apiSortColumn = capitalizeFirstLetter(sortColumn);
@@ -88,8 +84,10 @@ const AdminPage = () => {
             } while (currentPage <= totalPages);
 
             if (!allData.length) {
-                alert("No reports to export");
-                return;
+                return {
+                    success: false,
+                    message: "No reports to export"
+                };
             }
 
             // Create workbook and sheet
@@ -163,6 +161,12 @@ const AdminPage = () => {
             const blob = new Blob([buffer], { type: "application/octet-stream" });
             fs.saveAs(blob, `${sheetName}.xlsx`);
 
+            const exportText = "All reports exported successfully!";
+            return {
+                success: true,
+                message: exportText
+            };
+
         } catch (err) {
             console.error("Error exporting all reports:", err);
             alert("Failed to export reports. Check console for details.");
@@ -204,56 +208,10 @@ const AdminPage = () => {
     return (
         <>
             <div className="container-fluid page p-0">
-                {/* Table placeholder below */}
                 <AdminNavbar />
-                {/* <FilterBar
-                    users={dropdownOptions.username}
-                    clients={dropdownOptions.client}
-                /> */}
-                {/* <h1 className="text-center">Admin Timesheet Experiment</h1> */}
                 {isDefault ? (
-                    // <AdminTable data={reportData} setData={setReportData}
-                    //     page={page}
-                    //     totalPages={totalPages}
-                    //     onPageChange={(newPage) => setPage(newPage)}
-                    //     loadReports={loadReports}
-                    //     dropdownOptions={dropdownOptions}
-                    //     startDate={startDate}
-                    //     setStartDate={setStartDate}
-                    //     setEndDate={setEndDate}
-                    //     endDate={endDate}
-                    //     selectedClient={selectedClient}
-                    //     selectedUser={selectedUser}
-                    //     setSelectedClient={setSelectedClient}
-                    //     setSelectedUser={setSelectedUser}
-                    //     sortColumn={sortColumn}
-                    //     sortDirection={sortDirection}
-                    //     setSortDirection={setSortDirection}
-                    //     setSortColumn={setSortColumn}
-                    //     onExportExcel={handleExportAllReports}
-                    // />
-                    <AddTimesheet
-                    // loggedInUser={loggedInUser}
-                    // data={reportData} setData={setReportData}
-                    // page={page}
-                    // totalPages={totalPages}
-                    // onPageChange={(newPage) => setPage(newPage)}
-                    // loadReports1={loadReports1}
-                    // dropdownOptions={dropdownOptions1}
-                    // startDate={startDate}
-                    // setStartDate={setStartDate}
-                    // setEndDate={setEndDate}
-                    // endDate={endDate}
-                    // selectedClient={selectedClient}
-                    // selectedUser={selectedUser}
-                    // setSelectedClient={setSelectedClient}
-                    // setSelectedUser={setSelectedUser}
-                    // sortColumn={sortColumn}
-                    // sortDirection={sortDirection}
-                    // setSortDirection={setSortDirection}
-                    // setSortColumn={setSortColumn}
-                    // onExportExcel={handleExportAllReports}
-                    />
+                    
+                    <AddTimesheet />
 
                 ) : (
                     <Outlet
@@ -282,47 +240,6 @@ const AdminPage = () => {
                         }}
                     />
                 )}
-                {/* {(totalPages > 1) && (
-                    <>
-                        <div className="container">
-                            <div className="d-flex justify-content-around align-items-center mt-1">
-                                <button
-                                    className="btn btn-outline-dark me-2"
-                                    disabled={page <= 1}
-                                    onClick={() => setPage(page - 1)}
-                                >
-                                    Previous
-                                </button>b
-                                <span>
-                                    Page {page} of {totalPages}
-                                </span>
-                                <button
-                                    className="btn btn-outline-dark ms-2"
-                                    disabled={page >= totalPages}
-                                    onClick={() => setPage(page + 1)}
-                                >
-                                    Next
-                                </button>
-                            </div>
-                        </div>
-                    </>
-                )
-                } */}
-                {/* <footer
-                    style={{
-                        width: "100%",
-                        background: "white",
-                        color: "blac",
-                        textAlign: "center",
-                        padding: "10px 0",
-                        position: "fixed",
-                        bottom: 0,
-                        left: 0,
-                        zIndex: 1000,
-                    }}
-                >
-                    Dummy Footer Content — Always at Bottom
-                </footer> */}
             </div >
 
         </>

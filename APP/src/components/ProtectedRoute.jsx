@@ -40,16 +40,13 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 
     // If no one is logged in, redirect to login
     if (!user || !token || loggedOut) {
-        // logout();
         return <Navigate to="/" replace />;
     }
 
     // If the logged-in user's role is not allowed, redirect to login
     if (!allowedRoles.includes(user.role.toLowerCase())) {
-        // logout();
         return <Navigate to="/" replace />;
     }
-
 
     return children;
 };

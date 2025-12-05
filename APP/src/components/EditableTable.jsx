@@ -79,10 +79,8 @@ const EditableTable = ({
         setTimeout(() => setShowToast(false), 2000);
     };
 
-
     //  Add new row
     const handleAddRow = async () => {
-        // if (!Object.values(newRow).some((v) => v)) return; // prevent empty row
 
         const hasEmptyField = Object.entries(newRow).some(([key, value]) => {
             if (key === "id" || key === "sno") return false;
@@ -95,7 +93,6 @@ const EditableTable = ({
                 if (key === "id" || key === "sno") return;
                 if (!value) errors[key] = true;
             });
-            // alert("Please fill all fields before saving.");
             triggerToast("Please fill all required fields before saving.","danger");
             setRowErrors(errors);
             return;
@@ -120,7 +117,7 @@ const EditableTable = ({
             }
         } catch (error) {
             console.error("Error adding report:", error);
-            alert("An error occurred while adding the report.");
+            triggerToast("An error occurred while adding the report.","danger");
         }
         setNewRow(Object.fromEntries(
             columns.map((c) => [
@@ -166,8 +163,6 @@ const EditableTable = ({
         }
     }
 
-
-
     //  Update edited row
     const handleUpdate = async () => {
         if (editIndex === null) return;
@@ -192,7 +187,7 @@ const EditableTable = ({
         }
 
         if (!row.id) {
-            alert("Missing report ID");
+            triggerToast("Missing report ID","danger");
             return;
         }
 
@@ -211,7 +206,7 @@ const EditableTable = ({
             }
         } catch (error) {
             console.error("Error updating:", error);
-            alert("Error updating report.");
+            triggerToast("Error updating report.","danger");
         }
     };
 
@@ -219,7 +214,7 @@ const EditableTable = ({
     const handleDelete = async (index) => {
         const row = data[index];
         if (!row.id) {
-            alert("Missing report ID");
+            triggerToast("Missing report ID","danger");
             return;
         }
 
@@ -238,8 +233,20 @@ const EditableTable = ({
 
             } catch (error) {
                 console.error("Error deleting:", error);
-                alert("Error deleting report.");
+                triggerToast("Error deleting report.","danger");
             }
+        }
+    };
+
+    const handleExportClick = async () => {
+        const result = await onExportExcel();
+
+        if (!result) return;
+
+        if (result.success) {
+            triggerToast(result.message, "success");
+        } else {
+            triggerToast(result.message, "danger");
         }
     };
 
@@ -320,7 +327,7 @@ const EditableTable = ({
                             overlay={<Tooltip>Download reports as Excel</Tooltip>}
                         >
                             <button className="btn btn-success btn-md px-3 ms-0"
-                                onClick={onExportExcel}
+                                onClick={handleExportClick}
                             >
                                 <FaFileExcel size={16} />
                             </button>

@@ -1,7 +1,5 @@
 import React from "react";
 import { OverlayTrigger, Tooltip } from "react-bootstrap";
-// import { FaRedo } from "react-icons/fa";
-// import { BsBootstrapReboot } from "react-icons/bs";
 const FilterBar = ({
     users = [],
     clients = [],
