@@ -39,10 +39,10 @@ namespace QuiperTracker.Controllers
                     .FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
 
                 if (user == null)
-                    return NotFound(new { success = false, message = "Email not found" });
+                    return NotFound(new { success = false, message = "User not found. Please Contact administrator." });
 
                 if (user.Status.ToLower() == "inactive")
-                    return Ok(new { success = false, message = "InActive User Please contact your administrator", user = (object?)null });
+                    return Ok(new { success = false, message = "Inactive User. Please Contact administrator.", user = (object?)null });
 
                 var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
                 var issuer = _configuration["Jwt:Issuer"];

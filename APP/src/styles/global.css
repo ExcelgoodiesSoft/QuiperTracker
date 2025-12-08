@@ -123,6 +123,10 @@ th{
   text-align: right;
 }
 
+.table td.time-cell {
+  text-align: right;
+}
+
 .theight{
     height: 60vh;
 }

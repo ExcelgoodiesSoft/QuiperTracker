@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { FaPencilAlt, FaTrashAlt, FaFileExcel, FaTimes } from "react-icons/fa";
-import { OverlayTrigger, Tooltip } from "react-bootstrap";
+import { OverlayTrigger, Tooltip, Modal, Button } from "react-bootstrap";
 const EditableTable = ({
     columns = [],
     data = [],
@@ -42,7 +42,8 @@ const EditableTable = ({
         )
     );
     const [rowErrors, setRowErrors] = useState({});
-
+    const [showModal, setShowModal] = useState(false);
+    const [deleteIndex, setDeleteIndex] = useState(null);
 
     const formatDate = (dateString) => {
         if (!dateString) return "";
@@ -93,7 +94,7 @@ const EditableTable = ({
                 if (key === "id" || key === "sno") return;
                 if (!value) errors[key] = true;
             });
-            triggerToast("Please fill all required fields before saving.","danger");
+            triggerToast("Please fill all required fields before saving.", "danger");
             setRowErrors(errors);
             return;
         }
@@ -110,14 +111,14 @@ const EditableTable = ({
                 const updateData = [...data, response.data];
                 setRowErrors({});
                 setData(updateData);
-                triggerToast(response.message || "Report added successfully!","success");
+                triggerToast(response.message || "Report added successfully!", "success");
                 if (onDataChange) onDataChange();
             } else {
-                triggerToast(response.message || "Failed to add report.","danger");
+                triggerToast(response.message || "Failed to add report.", "danger");
             }
         } catch (error) {
             console.error("Error adding report:", error);
-            triggerToast("An error occurred while adding the report.","danger");
+            triggerToast("An error occurred while adding the report.", "danger");
         }
         setNewRow(Object.fromEntries(
             columns.map((c) => [
@@ -182,12 +183,12 @@ const EditableTable = ({
                 if (!value) errors[key] = true;
             });
             setRowErrors(errors);
-            triggerToast("Please fill all required fields before Updating.","danger");
+            triggerToast("Please fill all required fields before Updating.", "danger");
             return;
         }
 
         if (!row.id) {
-            triggerToast("Missing report ID","danger");
+            triggerToast("Missing report ID", "danger");
             return;
         }
 
@@ -200,13 +201,13 @@ const EditableTable = ({
                 setRowErrors({});
                 if (onDataChange)
                     onDataChange();
-                triggerToast(response.message || "Report updated successfully!","success");
+                triggerToast(response.message || "Report updated successfully!", "success");
             } else {
-                triggerToast(response.message || "Failed to update report.","danger");
+                triggerToast(response.message || "Failed to update report.", "danger");
             }
         } catch (error) {
             console.error("Error updating:", error);
-            triggerToast("Error updating report.","danger");
+            triggerToast("Error updating report.", "danger");
         }
     };
 
@@ -214,28 +215,35 @@ const EditableTable = ({
     const handleDelete = async (index) => {
         const row = data[index];
         if (!row.id) {
-            triggerToast("Missing report ID","danger");
+            triggerToast("Missing report ID", "danger");
             return;
         }
-
-        if (window.confirm("Are you sure you want to delete this report?")) {
-            try {
-                const response = await deleteItem(row.id);
-                if (response?.success) {
-                    const updateData = data.filter((_, i) => i !== index);
-                    setData(updateData);
-                    if (onDataChange)
-                        onDataChange();
-                    triggerToast(response.message || "Report deleted successfully!","success")
-                } else {
-                    triggerToast(response.message || "Failed to delete report.","danger");
-                }
-
-            } catch (error) {
-                console.error("Error deleting:", error);
-                triggerToast("Error deleting report.","danger");
+        try {
+            const response = await deleteItem(row.id);
+            if (response?.success) {
+                const updateData = data.filter((_, i) => i !== index);
+                setData(updateData);
+                if (onDataChange)
+                    onDataChange();
+                triggerToast(response.message || "Report deleted successfully!", "success")
+            } else {
+                triggerToast(response.message || "Failed to delete report.", "danger");
             }
+
+        } catch (error) {
+            console.error("Error deleting:", error);
+            triggerToast("Error deleting report.", "danger");
         }
+    };
+
+    const openDeleteModal = (index) => {
+        setDeleteIndex(index);
+        setShowModal(true);
+    };
+
+    const confirmDelete = () => {
+        handleDelete(deleteIndex);
+        setShowModal(false);
     };
 
     const handleExportClick = async () => {
@@ -490,7 +498,7 @@ const EditableTable = ({
                                                         {showDelete && (
                                                             <button
                                                                 className="btn btn-link text-dark p-0"
-                                                                onClick={() => handleDelete(index)}
+                                                                onClick={() => openDeleteModal(index)}
                                                             ><FaTrashAlt /></button>
                                                         )}
                                                     </>
@@ -523,7 +531,10 @@ const EditableTable = ({
                                             : row[col.accessor];
 
                                     return <td key={col.accessor}
-                                        className={col.accessor === "date" && "date-row"}
+                                        className={
+                                            col.accessor === "date" ? "date-row" :
+                                                (col.accessor === "manHours" || col.accessor === "manMinutes") ? "time-cell" : ""
+                                        }
                                     >
                                         {editIndex === index && canEdit
                                             ? renderInput(col, row[col.accessor], (e) => handleChange(e, index))
@@ -559,7 +570,7 @@ const EditableTable = ({
                                                     {showDelete && (
                                                         <button
                                                             className="btn btn-link text-danger p-0"
-                                                            onClick={() => handleDelete(index)}
+                                                            onClick={() => openDeleteModal(index)}
                                                         ><FaTrashAlt /></button>
                                                     )}
                                                 </>
@@ -570,6 +581,23 @@ const EditableTable = ({
                         ))}
                     </tbody>
                 </table>
+                {/* Delete Confirmation Modal */}
+                <Modal show={showModal} onHide={() => setShowModal(false)} centered>
+                    <Modal.Header closeButton>
+                        <Modal.Title>Delete Report</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        Are you sure you want to delete this report?
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button variant="secondary" onClick={() => setShowModal(false)}>
+                            Cancel
+                        </Button>
+                        <Button variant="danger" onClick={confirmDelete}>
+                            Delete
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
             </div>
         </>
     );
