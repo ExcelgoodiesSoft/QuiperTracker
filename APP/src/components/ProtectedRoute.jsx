@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Navigate } from "react-router-dom";
-import { getLoggedInUser, getToken, logout } from "../services/authService";
+import { getLoggedInUser, getToken, logout,isTokenExpired } from "../services/authService";
 
 const ProtectedRoute = ({ children, allowedRoles }) => {
     const [loggedOut, setLoggedOut] = useState(false);
@@ -9,6 +9,12 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
 
     useEffect(() => {
         if (!token) return;
+
+        if (isTokenExpired(token)) {
+            logout();
+            setLoggedOut(true);
+            return;
+        }
 
         try {
             // Decode JWT payload
@@ -37,6 +43,16 @@ const ProtectedRoute = ({ children, allowedRoles }) => {
             setLoggedOut(true);
         }
     }, [token]);
+
+    useEffect(() => {
+        const handleUnload = () => logout();
+        window.addEventListener("beforeunload", handleUnload);
+        window.addEventListener("pagehide", handleUnload);
+        return () => {
+            window.removeEventListener("beforeunload", handleUnload);
+            window.removeEventListener("pagehide", handleUnload);
+        };
+    }, []);
 
     // If no one is logged in, redirect to login
     if (!user || !token || loggedOut) {

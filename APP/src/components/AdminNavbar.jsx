@@ -2,6 +2,7 @@ import React from "react";
 import companyLogo from "../assets/quipersoft_top_logo1.svg";
 import { getLoggedInUser, logout } from "../services/authService";
 import { Dropdown } from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 const AdminNavbar = () => {
     const loggedInUser = getLoggedInUser();
@@ -16,13 +17,13 @@ const AdminNavbar = () => {
         <nav className="navbar navbar-expand-lg bg-white shadow-sm mb-2 w-100 border-bottom">
             <div className="container-fluid">
                 {/* Company Logo */}
-                <a className="navbar-brand" href=".">
+                <span className="navbar-brand">
                     <img
                         src={companyLogo}
                         alt="Company Logo"
                         style={{ width: "120px", height: "auto" }}
                     />
-                </a>
+                </span>
 
                 {isAdmin && (
                     <>
@@ -52,16 +53,16 @@ const AdminNavbar = () => {
                                         </Dropdown.Toggle>
 
                                         <Dropdown.Menu>
-                                            <Dropdown.Item href="/admin/config/clients">
+                                            <Dropdown.Item as={Link} to="/admin/config/clients">
                                                 Client Config
                                             </Dropdown.Item>
-                                            <Dropdown.Item href="/admin/config/projects">
+                                            <Dropdown.Item as={Link} to="/admin/config/projects">
                                                 Project Config
                                             </Dropdown.Item>
-                                            <Dropdown.Item href="/admin/config/roles">
+                                            <Dropdown.Item as={Link} to="/admin/config/roles">
                                                 Role Config
                                             </Dropdown.Item>
-                                            <Dropdown.Item href="/admin/config/users">
+                                            <Dropdown.Item as={Link} to="/admin/config/users">
                                                 User Config
                                             </Dropdown.Item>
                                         </Dropdown.Menu>
@@ -69,11 +70,11 @@ const AdminNavbar = () => {
                                 </li>
 
                                 <li className="nav-item">
-                                    <a className="nav-link text-black" href="/admin">Update Timesheet</a>
+                                    <Link className="nav-link text-black" to="/admin">Update Timesheet</Link>
                                 </li>
 
                                 <li className="nav-item">
-                                    <a className="nav-link text-black" href="/admin/view-timesheet">View Timesheet</a>
+                                    <Link className="nav-link text-black" to="/admin/view-timesheet">View Timesheet</Link>
                                 </li>
 
                             </ul>
