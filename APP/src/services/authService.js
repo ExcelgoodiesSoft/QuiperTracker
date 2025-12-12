@@ -3,7 +3,7 @@ import axios from "axios";
 
 const API_BASE_URL = "https://localhost:7100/api/home";
 
-export const login = async (email) => {
+export const login = async (email, password) => {
 
     if (localStorage.getItem("loggedInUser")) {
         return { success: false, message: "A user is already logged in on this browser." };
@@ -11,7 +11,7 @@ export const login = async (email) => {
 
     try {
         const response = await axios.get(`${API_BASE_URL}/login`, {
-            params: { email },
+            params: { email, password },
         });
 
         if (response.data?.success) {

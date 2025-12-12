@@ -28,12 +28,12 @@ namespace QuiperTracker.Controllers
 
         [AllowAnonymous]
         [HttpGet("login")]
-        public async Task<IActionResult> Login(string email)
+        public async Task<IActionResult> Login(string email, string password)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(email))
-                    return BadRequest(new { success = false, message = "Email is required" });
+                if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(password))
+                    return BadRequest(new { success = false, message = "Email and password is required" });
 
                 var user = await _context.Users
                     .FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower());
@@ -43,6 +43,8 @@ namespace QuiperTracker.Controllers
 
                 if (user.Status.ToLower() == "inactive")
                     return Ok(new { success = false, message = "Inactive User. Please Contact administrator.", user = (object?)null });
+                if (!string.Equals(user.Password, password, StringComparison.Ordinal))
+                    return Unauthorized(new { success = false, message = "Invalid credentials" });
 
                 var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
                 var issuer = _configuration["Jwt:Issuer"];
@@ -79,7 +81,8 @@ namespace QuiperTracker.Controllers
                         user.Name,
                         user.Email,
                         user.Role,
-                        user.Status
+                        user.Status,
+                        user.LoginStatus
                     }
                 });
 
@@ -550,6 +553,14 @@ namespace QuiperTracker.Controllers
                 var result = query
                     .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize)
+                    .Select(u => new {
+                         u.Id,
+                         u.Name,
+                         u.Email,
+                         u.Role,
+                         u.Status,
+                         u.LoginStatus
+                    })
                     .ToList();
 
                 return Ok(new

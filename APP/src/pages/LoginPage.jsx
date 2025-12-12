@@ -5,12 +5,13 @@ import companyLogo from "../assets/Quipersoft-logo.jpg"
 
 const LoginPage = () => {
     const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
     const [error, setError] = useState("");
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const result = await login(email);
+        const result = await login(email,password);
 
         if (!result.success) {
             setError(result.message || "Login failed");
@@ -35,9 +36,20 @@ const LoginPage = () => {
                         value={email}
                         onChange={(e) => {
                             setEmail(e.target.value);
-                            if(e.target.value.trim() === ""){
+                            if (e.target.value.trim() === "") {
                                 setError("");
                             }
+                        }}
+                        required
+                        className="mb-3"
+                    />
+                    <input
+                        type="password"
+                        placeholder="Password"
+                        value={password}
+                        onChange={(e) => {
+                            setPassword(e.target.value);
+                            if (e.target.value.trim() === "") setError("");
                         }}
                         required
                         className="mb-3"

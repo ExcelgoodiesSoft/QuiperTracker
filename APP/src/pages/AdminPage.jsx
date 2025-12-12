@@ -194,7 +194,7 @@ const AdminPage = () => {
         loadReports();
         loadDropdownData();
         // eslint-disable-next-line
-    }, [startDate, endDate, sortDirection, sortColumn, selectedClient, selectedUser, page]);
+    }, [ location.pathname, startDate, endDate, sortDirection, sortColumn, selectedClient, selectedUser, page]);
 
     const dropdownOptions = {
         username: users.filter((u) => u.status?.toLowerCase() !== "inactive").map((u) => u.name),

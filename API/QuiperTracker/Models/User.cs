@@ -14,4 +14,8 @@ public partial class User
     public string Role { get; set; } = null!;
 
     public string Status { get; set; } = null!;
+
+    public string? Password { get; set; }
+
+    public int LoginStatus { get; set; }
 }

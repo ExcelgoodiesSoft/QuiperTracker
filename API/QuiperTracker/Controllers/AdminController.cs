@@ -194,6 +194,9 @@ namespace QuiperTracker.Controllers
                 if (string.IsNullOrWhiteSpace(newUser.Status))
                     newUser.Status = "InActive";
 
+                if (string.IsNullOrWhiteSpace(newUser.Password)) newUser.Password = "123456";
+                newUser.LoginStatus = 0;
+
                 // Check if email already exists
                 bool emailExists = await _context.Users.AnyAsync(u => u.Email == newUser.Email);
                 if (emailExists)
@@ -206,7 +209,15 @@ namespace QuiperTracker.Controllers
                 {
                     success = true,
                     message = "User added successfully",
-                    data = newUser
+                    data = new
+                    {
+                        newUser.Id,
+                        newUser.Name,
+                        newUser.Email,
+                        newUser.Role,
+                        newUser.Status,
+                        newUser.LoginStatus
+                    }
                 });
             }
             catch (Exception ex)
@@ -259,7 +270,15 @@ namespace QuiperTracker.Controllers
                 {
                     success = true,
                     message = "User updated successfully",
-                    data = existing
+                    data = new
+                    {
+                        existing.Id,
+                        existing.Name,
+                        existing.Email,
+                        existing.Role,
+                        existing.Status,
+                        existing.LoginStatus
+                    }
                 });
 
             }
