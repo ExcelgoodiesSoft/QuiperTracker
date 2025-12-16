@@ -37,6 +37,25 @@ export const login = async (email, password) => {
     }
 };
 
+export const updatePassword = async (email, newPassword) => {
+  try {
+    const token = getToken();
+    const res = await axios.put(
+      `${API_BASE_URL}/update-password`,
+      null, // no body, using query params
+      {
+        params: { email, newPassword },
+        headers: { Authorization: `Bearer ${token}` }
+      }
+    );
+    if (res.data?.success) return { success: true, user: res.data.data };
+    return { success: false, message: res.data?.message || "Update failed" };
+  } catch (err) {
+    return { success: false, message: err.response?.data?.message || "Update failed" };
+  }
+};
+
+
 // Get the logged-in user from localStorage
 export const getLoggedInUser = () => {
     const storedUser = localStorage.getItem("loggedInUser");

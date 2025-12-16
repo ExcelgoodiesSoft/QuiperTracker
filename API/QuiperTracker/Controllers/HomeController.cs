@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using QuiperTracker.Data;
+using QuiperTracker.Decrypt;
 using QuiperTracker.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -43,7 +44,29 @@ namespace QuiperTracker.Controllers
 
                 if (user.Status.ToLower() == "inactive")
                     return Ok(new { success = false, message = "Inactive User. Please Contact administrator.", user = (object?)null });
-                if (!string.Equals(user.Password, password, StringComparison.Ordinal))
+                
+                bool passwordOk = false;
+
+                // Legacy/plaintext default
+                if (string.Equals(user.Password, "123456", StringComparison.Ordinal))
+                {
+                    passwordOk = string.Equals(password, "123456", StringComparison.Ordinal);
+                }
+                else
+                {
+                    // Encrypted path
+                    try
+                    {
+                        var decrypted = ConfigurationProtector.Decrypt(user.Password);
+                        passwordOk = string.Equals(decrypted, password, StringComparison.Ordinal);
+                    }
+                    catch
+                    {
+                        passwordOk = false;
+                    }
+                }
+
+                if (!passwordOk)
                     return Unauthorized(new { success = false, message = "Invalid credentials" });
 
                 var key = Encoding.UTF8.GetBytes(_configuration["Jwt:Key"]);
@@ -91,6 +114,28 @@ namespace QuiperTracker.Controllers
             {
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
+        }
+
+        [Authorize(Roles = "admin,user")]
+        [HttpPut("update-password")]
+        public async Task<IActionResult> UpdatePassword([FromQuery] string email, [FromQuery] string newPassword)
+        {
+            if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(newPassword))
+                return BadRequest(new { success = false, message = "Invalid payload" });
+
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+            if (user == null) return NotFound(new { success = false, message = "User not found" });
+
+            user.Password = ConfigurationProtector.Encrypt(newPassword) ;
+            user.LoginStatus = 1;
+            await _context.SaveChangesAsync();
+
+            return Ok(new
+            {
+                success = true,
+                message = "Password updated",
+                data = new { user.Id, user.Name, user.Email, user.Role, user.Status, user.LoginStatus }
+            });
         }
 
         //[Authorize(Roles = "admin")]
